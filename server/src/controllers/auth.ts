@@ -1,0 +1,29 @@
+import express, { Request, Response, NextFunction } from 'express';
+import jwt, { VerifyErrors } from 'jsonwebtoken';
+
+const SECRET_KEY = process.env.SECRET_KEY;
+
+if (!SECRET_KEY) {
+  throw new Error('SECRET_KEY is not defined in the environment variables');
+}
+
+export const verifyToken = (req: any, res: Response, next: NextFunction): void => {
+    const token = req.headers['token'] as string;
+    console.log(token)
+    if (!token) {
+      console.log('error here ')
+      res.status(403).send({ auth: false, message: 'No token provided.' });
+      return;
+    }
+  
+    jwt.verify(token, SECRET_KEY, (err: VerifyErrors | null, decoded: any) => {
+      if (err) {
+        console.log('this is where error is coming from')
+        res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+        return;
+      }
+      
+      req.userId = (decoded as { id: number }).id;
+      next();
+    });
+  }
