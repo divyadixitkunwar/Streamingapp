@@ -15,7 +15,7 @@ export interface video{
 
 interface videoState{
     videos : video[];
-    status : 'idle' | 'loading' | 'sucess' | 'fail';
+    status : 'idle' | 'loading' | 'success' | 'fail';
     error: null | string
 }
 
@@ -25,9 +25,17 @@ const initialState : videoState = {
     error: null
 }
 
+export const url = import.meta.env.VITE_APP_URL
+? import.meta.env.VITE_APP_URL
+: null;
+
 
 export const fetchVideos = createAsyncThunk('video/fetchVideo', async ()=>{
-    const res = await axios.get('http://localhost:8080/')
+  if (!url) {
+    throw new Error("URL is not defined in the environment variables.");
+  }
+    console.log(`This is the env ${url}`)
+    const res = await axios.get(`${url}/`)
     return res.data;
 })
 
@@ -42,7 +50,7 @@ const videoSlice = createSlice({
             state.status = 'loading';
           })
           .addCase(fetchVideos.fulfilled, (state, action: PayloadAction<video[]>) => {
-            state.status = 'sucess';
+            state.status = 'success';
             state.videos = action.payload;
           })
           .addCase(fetchVideos.rejected, (state, action) => {

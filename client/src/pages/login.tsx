@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-
+import { url } from "../redux/videoslice";
 
 const Login = () => {
   
@@ -28,7 +28,7 @@ const Login = () => {
       }
 
       try {
-        const res = await axios.post('http://localhost:8080/login',LoginData)
+        const res = await axios.post(`${url}/login`,LoginData)
         console.log(res.data)
         console.log(res.data.user.id)
         localStorage.setItem('token', res.data.token);

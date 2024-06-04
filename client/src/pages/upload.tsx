@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { url } from "../redux/videoslice";
 
 const Upload = () => {
   const [name, setName] = useState<string>('');
@@ -8,9 +9,6 @@ const Upload = () => {
   const [video, setVideo] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const navigate = useNavigate();
-
-  const videoInputRef = useRef<HTMLInputElement | null>(null);
-  const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -20,38 +18,21 @@ const Upload = () => {
     setDescription(e.target.value);
   }
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, fileType: string) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (fileType === 'video') {
-      setVideo(file);
-    } else if (fileType === 'thumbnail') {
-      setThumbnail(file);
-    }
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fileType: string) => {
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    if (fileType === 'video') {
-      setVideo(file);
-    } else if (fileType === 'thumbnail') {
-      setThumbnail(file);
-    }
+    setVideo(file);
   }
 
-  const handleDropAreaClick = (fileType: string) => {
-    if (fileType === 'video' && videoInputRef.current) {
-      videoInputRef.current.click();
-    } else if (fileType === 'thumbnail' && thumbnailInputRef.current) {
-      thumbnailInputRef.current.click();
-    }
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setThumbnail(file);
   }
 
-  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!video || !thumbnail || !name || !description) {
-      console.log('Name, description, video, and thumbnail are required');
+      console.log(`Name, description, video, and thumbnail are required THIS IS NAME ${name} THIS IS THUMBNAIL ${thumbnail} AND THIS IS DESCRIPTION ${description} and last video ${video}`);
       return;
     }
 
@@ -64,7 +45,7 @@ const Upload = () => {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await axios.post('http://localhost:8080/upload', allData, {
+      const res = await axios.post(`${url}/upload`, allData, {
         headers: {
           "Content-Type": 'multipart/form-data',
           'token': token || ''
@@ -79,41 +60,8 @@ const Upload = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-full flex-grow">
-      <div className="bg-white rounded-md w-full h-full flex items-center md:flex-row gap-4 ">
-        <div className="flex flex-col items-center h-full justify-center gap-4 w-1/2 mx-10 p-12">
-          <div
-            className="text-black cursor-pointer border-dashed border-2 border-gray-400 w-full h-1/2 flex items-center justify-center"
-            onDrop={(e) => handleDrop(e, 'video')}
-            onDragOver={(e) => e.preventDefault()}
-            onClick={() => handleDropAreaClick('video')}
-          >
-            Drop Video Here
-            <input
-              type="file"
-              accept="video/*"
-              ref={videoInputRef}
-              className="hidden"
-              onChange={(e) => handleFileChange(e, 'video')}
-            />
-          </div>
-
-          <div
-            className="text-black cursor-pointer border-dashed border-2 border-gray-400 w-full h-1/2 flex items-center justify-center"
-            onDrop={(e) => handleDrop(e, 'thumbnail')}
-            onDragOver={(e) => e.preventDefault()}
-            onClick={() => handleDropAreaClick('thumbnail')}
-          >
-            Drop Thumbnail Here
-            <input
-              type="file"
-              accept="image/*"
-              ref={thumbnailInputRef}
-              className="hidden"
-              onChange={(e) => handleFileChange(e, 'thumbnail')}
-            />
-          </div>
-        </div>
-        <form className="flex flex-col justify-center items-center h-full gap-6" onSubmit={handleSubmit}>
+      <div className="bg-white rounded-md w-full h-full flex items-center md:flex-row gap-4">
+        <form className="flex flex-col justify-center items-center h-full gap-6 w-full p-12" onSubmit={handleSubmit}>
           <div className="flex flex-col items-start w-80">
             <label htmlFor="name" className="text-black">Name</label>
             <input
@@ -133,6 +81,26 @@ const Upload = () => {
               placeholder="Enter your description"
               value={description}
               onChange={handleDescription}
+              className="w-full border-black border-2 rounded focus:outline-none focus:border-blue-950 placeholder-gray-400 mt-2 px-3 py-2"
+            />
+          </div>
+          <div className="flex flex-col items-start w-80">
+            <label htmlFor="video" className="text-black">Upload Video</label>
+            <input
+              id="video"
+              type="file"
+              accept="video/*"
+              onChange={handleVideoChange}
+              className="w-full border-black border-2 rounded focus:outline-none focus:border-blue-950 placeholder-gray-400 mt-2 px-3 py-2"
+            />
+          </div>
+          <div className="flex flex-col items-start w-80">
+            <label htmlFor="thumbnail" className="text-black">Upload Thumbnail</label>
+            <input
+              id="thumbnail"
+              type="file"
+              accept="image/*"
+              onChange={handleThumbnailChange}
               className="w-full border-black border-2 rounded focus:outline-none focus:border-blue-950 placeholder-gray-400 mt-2 px-3 py-2"
             />
           </div>

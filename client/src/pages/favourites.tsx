@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect , useState } from "react";
 import Card from '../components/card';
 import { video } from "../redux/videoslice";
+import { url } from "../redux/videoslice";
 
 const Favourites = () => {
 
@@ -14,7 +15,7 @@ const Favourites = () => {
   useEffect(() => { 
     const getFav = async () => {
       try {
-        const res = await axios.post('http://localhost:8080/fav', {}, {
+        const res = await axios.post(`${url}/fav`, {}, {
           headers: {
             'id': id,
             'token': token,

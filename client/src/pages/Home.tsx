@@ -23,7 +23,7 @@ useEffect(()=>{
 
   if (status === 'loading') {
     content = <p>Loading...</p>;
-  } else if (status === 'sucess') {
+  } else if (status === 'success') {
     content = (
       videos?.map((vid) => (
        <Card movie={vid}/>

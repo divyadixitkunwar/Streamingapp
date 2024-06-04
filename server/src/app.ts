@@ -10,16 +10,12 @@ import { errorHandler } from './controllers/error.js';
 
 
 export const app = express();
-const uploadDir = '/home/kunwar/videoFiles'
-const storage = multer.memoryStorage();
-const upload = multer({storage: storage});
+const store = multer.memoryStorage();
+const upload = multer({storage: store});
 export const prisma = new PrismaClient()
-export const SECRET_KEY = process.env.SECRET_KEY;
 
-
-app.use(express.static('/home/kunwar/videoFiles/'));
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 

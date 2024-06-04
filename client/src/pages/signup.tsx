@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { url } from "../redux/videoslice";
 const Signup = () => {
 
   const[userName , setUserName] = useState<string>('');
@@ -28,7 +29,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post('http://localhost:8080/signup',SignupData)
+      const res = await axios.post(`${url}/signup`,SignupData)
       console.log(res)
       
     } catch (error) {
