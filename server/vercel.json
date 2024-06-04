@@ -6,6 +6,10 @@
     "routes": [
       { "src": "/(.*)", "dest": "src/index.ts" }
     ],
-    "functions": { "src": "src" }
+    "functions": {
+      "src/index.ts": {
+        "memory": 1024
+      }
+    }
   }
   
