@@ -1,7 +1,6 @@
 {
     "build": {
-      "command": "vite build",
-      "outDir": "./dist" 
+      "outDir": "./dist"
     },
     "rewrites": [
       { "source": "/(.*)", "destination": "/index.html" }
