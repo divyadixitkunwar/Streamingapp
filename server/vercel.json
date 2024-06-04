@@ -5,6 +5,12 @@
     ],
     "routes": [
       { "src": "/(.*)", "dest": "src/index.ts" }
-    ]
+    ],
+    "functions": { "src": "src" },
+    "hooks": {
+      "build": {
+        "command": "npm run build && npx prisma generate"
+      }
+    }
   }
   
